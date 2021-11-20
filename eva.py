@@ -10,6 +10,11 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
 
+from numpy.random import seed
+seed(1)
+import tensorflow
+tensorflow.random.set_seed(2)
+
 num_classes = 10  # Tổng số lớp của MNIST (các số từ 0-9)
 n_hidden_1 = 256  # layer thứ nhất với 256 neurons
 n_hidden_2 = 256  # layer thứ hai với 256 neurons
