@@ -6,7 +6,7 @@ from tensorflow.keras.layers import Dense, Flatten
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split
 import keras
-
+import time
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -65,7 +65,9 @@ def eval(x):
                 optimizer=SGD(lr=learning_rate),
                 metrics=['accuracy'])
 
+  start = time.time()
   hys = zzz.fit(x_train, y_train, batch_size=batch_size, validation_data=(x_val, y_val), epochs=num_epoch)
+  stop = time.time()
   #zzz.fit(x_train, y_train, validation_data=(x_val, y_val), batch_size=batch_size, epochs=num_epoch)
   tf.keras.utils.plot_model(zzz, to_file='model1.png')
   score = zzz.evaluate(x_test, y_test)
@@ -76,6 +78,8 @@ def eval(x):
   v=prf(y_test, y_pred)
   training_loss = hys.history["loss"]
   test_loss = hys.history["val_loss"]
+  training_acc = hys.history["accuracy"]
+  test_acc = hys.history["val_accuracy"]
   # Create count of the number of epochs
   epoch_count = range(1, len(training_loss) + 1)
   # Visualize loss history
@@ -83,9 +87,24 @@ def eval(x):
   plt.plot(epoch_count, test_loss, "b-")
   plt.legend(["Training Loss", "Validate Loss"])
   plt.xlabel("Epoch")
+  plt.title("Biểu đồ training vs validation loss khi có "+ str(x)+" hidden layer")
+  plt.savefig("loss"+str(x)+".jpg")
   plt.show()
-  return score[0], score[1], v[0], v[1], v[2]
+  plt.plot(epoch_count, training_acc, "r--")
+  plt.plot(epoch_count, test_acc, "b-")
+  plt.legend(["Training accuracy", "Validate accuracy"])
+  plt.xlabel("Epoch")
+  plt.title("Biểu đồ training vs validation accuracy khi có "+ str(x)+" hidden layer")
+  plt.savefig("acc"+str(x)+".jpg")
+  plt.show()
+  return score[0], score[1], v[0], v[1], v[2], stop-start
 
 
 if __name__=="__main__":
-    eval(5)# tham số là số hidden layer
+    a=eval(5)
+    print("Loss: ", a[0])
+    print("Acc: ", a[1])
+    print("Precision: ", a[2])
+    print("Recall: ", a[3])
+    print("F1 score: ", a[4])
+    print("Train time(s): ", a[5])
