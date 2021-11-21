@@ -44,7 +44,7 @@ def evaluate(layers):
 
     y_train = keras.utils.np_utils.to_categorical(y_train, num_classes)
     y_test = keras.utils.np_utils.to_categorical(y_test, num_classes)
-
+    y_val = keras.utils.np_utils.to_categorical(y_val, num_classes)
 
 
 
@@ -61,11 +61,21 @@ def evaluate(layers):
                   optimizer=SGD(lr=learning_rate),
                   metrics=['accuracy'])
 
-    zzz.fit(x_train, y_train, batch_size=batch_size, epochs=num_epoch)
+    hys = zzz.fit(x_train, y_train, batch_size=batch_size, epochs=num_epoch)
     plot_model(zzz, to_file='model1.png')
     score = zzz.evaluate(x_test, y_test)
     y_pred = np.argmax(zzz.predict(x_test, batch_size=batch_size), axis=1)
     y_pred = keras.utils.np_utils.to_categorical(y_pred, num_classes)
     v=prf(y_test, y_pred)
+    training_loss = hys.history["loss"]
+    test_loss = hys.history["val_loss"]
+    # Create count of the number of epochs
+    epoch_count = range(1, len(training_loss) + 1)
+    # Visualize loss history
+    plt.plot(epoch_count, training_loss, "r--")
+    plt.plot(epoch_count, test_loss, "b-")
+    plt.legend(["Training Loss", "Validate Loss"])
+    plt.xlabel("Epoch")
+    plt.show()
     return score[0], score[1], v[0], v[1], v[2]
 
