@@ -20,7 +20,7 @@ n_hidden_1 = 256  # layer thứ nhất với 256 neurons
 n_hidden_2 = 256  # layer thứ hai với 256 neurons
 num_input = 784  # Số features đầu vào (tập MNIST với shape: 28*28)
 learning_rate = 0.1
-num_epoch = 10
+num_epoch = 30
 batch_size = 128
 
 def prf(test, pred):
