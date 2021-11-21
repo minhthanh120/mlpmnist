@@ -1,12 +1,12 @@
-from keras.utils.vis_utils import plot_model
-from tensorflow.keras.optimizers import SGD, Adam
-from tensorflow.keras import optimizers
-from keras.models import Sequential
-from keras.layers import Dense, Flatten
+import tensorflow as tf
+from tensorflow.keras.optimizers import SGD
+# from tensorflow.keras import optimizers
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split
 import keras
-import tensorflow as tf
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -36,10 +36,10 @@ x_val= x_val/255
 # one hot
 num_classes = 10  # Tổng số lớp của MNIST (các số từ 0-9)
 
-y_train = keras.utils.np_utils.to_categorical(y_train, num_classes)
-y_test = keras.utils.np_utils.to_categorical(y_test, num_classes)
+y_train = tf.keras.utils.to_categorical(y_train, num_classes)
+y_test = tf.keras.utils.to_categorical(y_test, num_classes)
 
-y_val = keras.utils.np_utils.to_categorical(y_val, num_classes)
+y_val = tf.keras.utils.to_categorical(y_val, num_classes)
 
 
 n_hidden_1 = 256  # layer thứ nhất với 256 neurons
@@ -58,22 +58,21 @@ def eval(x):
   zzz.add(Flatten(input_shape=(28, 28)))
   for i in range(x):
       zzz.add(Dense(n_hidden_1, activation='relu'))  # hidden layer1
-  # model.add(Dense(n_hidden_2, activation='relu'))  # hidden layer2
   zzz.add(Dense(num_classes, activation='softmax'))  # output layer
 
   # loss, optimizers
-  zzz.compile(loss=keras.losses.categorical_crossentropy,
+  zzz.compile(loss="categorical_crossentropy",
                 optimizer=SGD(lr=learning_rate),
                 metrics=['accuracy'])
 
   hys = zzz.fit(x_train, y_train, batch_size=batch_size, validation_data=(x_val, y_val), epochs=num_epoch)
   #zzz.fit(x_train, y_train, validation_data=(x_val, y_val), batch_size=batch_size, epochs=num_epoch)
-  plot_model(zzz, to_file='model1.png')
+  tf.keras.utils.plot_model(zzz, to_file='model1.png')
   score = zzz.evaluate(x_test, y_test)
   print('Test loss: %.4f' % (score[0]))
   print('Test accuracy: %.2f%%' % (score[1]*100))
   y_pred = np.argmax(zzz.predict(x_test, batch_size=batch_size), axis=1)
-  y_pred = keras.utils.np_utils.to_categorical(y_pred, num_classes)
+  y_pred = tf.keras.utils.to_categorical(y_pred, num_classes)
   v=prf(y_test, y_pred)
   training_loss = hys.history["loss"]
   test_loss = hys.history["val_loss"]
@@ -86,3 +85,7 @@ def eval(x):
   plt.xlabel("Epoch")
   plt.show()
   return score[0], score[1], v[0], v[1], v[2]
+
+
+if __name__=="__main__":
+    eval(5)# tham số là số hidden layer
