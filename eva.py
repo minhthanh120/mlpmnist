@@ -52,37 +52,37 @@ batch_size = 128
 
 def prf(test, pred):
     return precision_score(test, pred, average='macro'), recall_score(test, pred, average='macro'), f1_score(test, pred, average='macro')
+def eval(x):
 # build model
-zzz = Sequential()
-zzz.add(Flatten(input_shape=(28, 28)))
-for i in range(1):
-    zzz.add(Dense(n_hidden_1, activation='relu'))  # hidden layer1
-# model.add(Dense(n_hidden_2, activation='relu'))  # hidden layer2
-zzz.add(Dense(num_classes, activation='softmax'))  # output layer
+  zzz = Sequential()
+  zzz.add(Flatten(input_shape=(28, 28)))
+  for i in range(x):
+      zzz.add(Dense(n_hidden_1, activation='relu'))  # hidden layer1
+  # model.add(Dense(n_hidden_2, activation='relu'))  # hidden layer2
+  zzz.add(Dense(num_classes, activation='softmax'))  # output layer
 
-# loss, optimizers
-zzz.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=SGD(lr=learning_rate),
-              metrics=['accuracy'])
+  # loss, optimizers
+  zzz.compile(loss=keras.losses.categorical_crossentropy,
+                optimizer=SGD(lr=learning_rate),
+                metrics=['accuracy'])
 
-hys = zzz.fit(x_train, y_train, batch_size=batch_size, validation_data=(x_val, y_val), epochs=num_epoch)
-#zzz.fit(x_train, y_train, validation_data=(x_val, y_val), batch_size=batch_size, epochs=num_epoch)
-plot_model(zzz, to_file='model1.png')
-score = zzz.evaluate(x_test, y_test)
-print('Test loss: %.4f' % (score[0]))
-print('Test accuracy: %.2f%%' % (score[1]*100))
-y_pred = np.argmax(zzz.predict(x_test, batch_size=batch_size), axis=1)
-y_pred = keras.utils.np_utils.to_categorical(y_pred, num_classes)
-v=prf(y_test, y_pred)
-d = d.append({'loss': score[0], 'acc': score[1], 'prec': v[0],
-                 'recall': v[1], 'f1': v[2]}, ignore_index=True)
-training_loss = hys.history["loss"]
-test_loss = hys.history["val_loss"]
-# Create count of the number of epochs
-epoch_count = range(1, len(training_loss) + 1)
-# Visualize loss history
-plt.plot(epoch_count, training_loss, "r--")
-plt.plot(epoch_count, test_loss, "b-")
-plt.legend(["Training Loss", "Validate Loss"])
-plt.xlabel("Epoch")
-plt.show()
+  hys = zzz.fit(x_train, y_train, batch_size=batch_size, validation_data=(x_val, y_val), epochs=num_epoch)
+  #zzz.fit(x_train, y_train, validation_data=(x_val, y_val), batch_size=batch_size, epochs=num_epoch)
+  plot_model(zzz, to_file='model1.png')
+  score = zzz.evaluate(x_test, y_test)
+  print('Test loss: %.4f' % (score[0]))
+  print('Test accuracy: %.2f%%' % (score[1]*100))
+  y_pred = np.argmax(zzz.predict(x_test, batch_size=batch_size), axis=1)
+  y_pred = keras.utils.np_utils.to_categorical(y_pred, num_classes)
+  v=prf(y_test, y_pred)
+  training_loss = hys.history["loss"]
+  test_loss = hys.history["val_loss"]
+  # Create count of the number of epochs
+  epoch_count = range(1, len(training_loss) + 1)
+  # Visualize loss history
+  plt.plot(epoch_count, training_loss, "r--")
+  plt.plot(epoch_count, test_loss, "b-")
+  plt.legend(["Training Loss", "Validate Loss"])
+  plt.xlabel("Epoch")
+  plt.show()
+  return score[0], score[1], v[0], v[1], v[2]
