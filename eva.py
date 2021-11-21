@@ -61,7 +61,7 @@ def evaluate(layers):
                   optimizer=SGD(lr=learning_rate),
                   metrics=['accuracy'])
 
-    hys = zzz.fit(x_train, y_train, batch_size=batch_size, epochs=num_epoch)
+    hys = zzz.fit(x_train, y_train, batch_size=batch_size, validation_data=(x_val, y_val), epochs=num_epoch)
     plot_model(zzz, to_file='model1.png')
     score = zzz.evaluate(x_test, y_test)
     y_pred = np.argmax(zzz.predict(x_test, batch_size=batch_size), axis=1)
